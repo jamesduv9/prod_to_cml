@@ -41,11 +41,7 @@ class Configuration:
     def create_interface_mapping(self) -> None:
         """
         Look at the current Configurations and determine 1:1 old intf to subintf mapping
-        """
-        # confs = {config: config.l3_interfaces for config in self.configs}
-        # for conf_key, conf_values in confs.items():
-        #     conf_key.interface_mapping = {c['if_name']: c['new_if_name'] for c in conf_values}
-        #     
+        """   
         retdict = {}
         for config in self.l3_interfaces:
             retdict[config['if_name']] = config['new_if_name']
