@@ -199,10 +199,12 @@ class Converter:
                 if match:
                     for interface in config_interfaces:
                         if interface["if_name"] == match.group():
+                            print(line)
                             new_config.append(
                                 line.replace(match.group(), interface["new_if_name"])
                                 
                             )
+                            print(interface["new_if_name"])
                             config_flag = True
                             break
                 if not config_flag:

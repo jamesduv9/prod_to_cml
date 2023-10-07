@@ -1,6 +1,6 @@
 #Attempt to match all common interface types, in shorthand or full notation
 ALL_INTERFACE_FLAVORS_REGEX = (
-    r"\b(?:Gi(gabitEthernet)|Eth(ernet)|Vl(an)|Fa(stEthernet)|Se(rial)|Te(nGigabitEthernet)|Twe(GigabitEthernet)|Po(rtChannel))\d+(?:\/\d+)*(?:\/\d+)?\b.*"
+    r"\b(?:Gi(gabitEthernet)|Eth(ernet)|Vl(an)|Fa(stEthernet)|Se(rial)|Te(nGigabitEthernet)|Twe(GigabitEthernet)|Po(rtChannel))\d+(?:\/\d+)*(?:\/\d+)?\b"
 )
 
 #Appended to start of config to add our admin:admin

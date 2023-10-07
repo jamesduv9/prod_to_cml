@@ -13,22 +13,22 @@ def main():
 @click.command(name="create_configs")
 @click.option(
     "--source_path",
-    help="path to your configuration directory you want to convert",
-    default="./",
+    help="MANDATORY: path to your configuration directory you want to convert",
+    required=True,
 )
 @click.option(
     "--output_path",
-    help="Mandatory: Provide the destination directory for the configs, interface mapping, and tfvars json file. Cannot equal source_path",
+    help="MANDATORY: Provide the destination directory for the configs, interface mapping, and tfvars json file. Cannot equal source_path",
     required=True,
 )
 @click.option(
     "--vlan_seed",
-    help="Which vlan to start incrementing at, avoid setting too high. Must be greater than 1",
+    help="OPTIONAL: Which vlan to start incrementing at, avoid setting too high. Must be greater than 1",
     default=2,
 )
 @click.option(
     "--config_file_ext",
-    help="Tells the script which file extension your configs will use inside the source_path directory",
+    help="OPTIONAL: Tells the script which file extension your configs will use inside the source_path directory",
     default=".config",
 )
 def create_configs(
