@@ -112,6 +112,7 @@ The Terraform deployment can take 5-10 minutes depends on how many nodes you are
 
 ## Important Notes
 - The script removes all aaa commands and credentials and replaces the with admin:admin (username:password)
+- The script appends an EEM script to the start of the CSRv configuration to automatically no shut GigabitEthernet1
 
 
 
