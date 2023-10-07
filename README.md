@@ -68,7 +68,9 @@ example_output/
 
 ```
 ## Deployment Using Terraform
-We now have everything we need to deploy the lab in CML via terraform. The main.tf accepts four important variables that you can either set before running by setting them as environmental variables, or manually inputting them at runtime. In this example I'll do them at runtime. I'm now going to change directories into the output folder, initiate terraform, and deploy the lab
+We now have everything we need to deploy the lab in CML via terraform. The main.tf accepts four important variables, cml_lab_name, cml_username, cml_password, and cml_url. You can either set these as environmental variables (TF_VAR_*) before applying or manually answer the prompt at runtime. In this example I'll set them at runtime. 
+
+I'll now going to change directories into the output folder, initiate terraform, apply our terraform plan. This should deploy the complete lab
 
 ```
 > cd example_output
