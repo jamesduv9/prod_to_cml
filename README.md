@@ -41,8 +41,10 @@ By default the optional options ```vlan_seed``` and ```config_file_ext``` are se
 
 You can then run the script by passing it a directory of configurations you want to convert, along with an output directory. In this example I also have my configurations stored as .txt files, and I want to start with a vlan seed of 5
 
-```> python3 prod_to_cml.py create_configs --source_path example_source/ --output_path example_output --config_file_ext ".txt" --vlan_seed
- 5```
+```
+> python3 prod_to_cml.py create_configs --source_path example_source/ --output_path example_output --config_file_ext ".txt" --vlan_seed
+ 5
+```
 
 And then inspecting the output directory ./example_output
 
