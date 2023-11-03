@@ -48,8 +48,11 @@ class Converter:
         """
         Saves the interface mapping to an output file
         """
+        overall_mapping = {"devices": {}}
         for config in self.configs:
-            self.save_output(file_=f"{config.file_}-interface_map.json", save_me=config.interface_mapping, type_="json")
+            overall_mapping["devices"][config.hostname] = config.interface_mapping
+        
+        self.save_output(file_=f"overall_interface_map.json", save_me=overall_mapping, type_="json")
 
 
     def create_tf_files(self) -> None:
@@ -199,12 +202,10 @@ class Converter:
                 if match:
                     for interface in config_interfaces:
                         if interface["if_name"] == match.group():
-                            print(line)
                             new_config.append(
                                 line.replace(match.group(), interface["new_if_name"])
                                 
                             )
-                            print(interface["new_if_name"])
                             config_flag = True
                             break
                 if not config_flag:

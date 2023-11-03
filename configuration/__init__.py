@@ -8,8 +8,25 @@ class Configuration:
         self.file_path = file_path
         self.file_ = file_
         self.l3_interfaces = []
-        self.new_configuration: str()
+        self.new_configuration = str()
+        self.current_parsed_config = str()
         self.interface_mapping = dict()
+        self.hostname = str()
+
+    def get_current_config(self) -> None:
+        """
+        Turn the current network configuration into a parsed CiscoConfParse Object
+        """
+        self.current_parsed_config = CiscoConfParse(self.file_path)
+
+    def get_hostname(self) -> None:
+        """
+        Look at current config and find hostname
+        """
+        hn = self.current_parsed_config.find_lines("hostname")
+        if hn:
+            hn_line = hn[0]
+            self.hostname = hn_line.split(" ")[1]
 
     def get_l3_interfaces(self) -> None:
         """
@@ -17,10 +34,9 @@ class Configuration:
         Retrieves the Primary IP and will use that in the future for comparison
         Appends a dictionary to the l3_interfaces array
         """
-        parse = CiscoConfParse(self.file_path)
-        interfaces = parse.find_lines("^int(erface) (Gi|Fa|Se|Te|Tw|Eth|Fo|Vlan|BDI|Po)")
+        interfaces = self.current_parsed_config.find_lines("^int(erface) (Gi|Fa|Se|Te|Tw|Eth|Fo|Vlan|BDI|Po)")
         for interface in interfaces:
-            ip_config = parse.find_children_w_parents(
+            ip_config = self.current_parsed_config.find_children_w_parents(
                 f"^{interface}$",
                 "ip address \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$",
             )
@@ -42,7 +58,7 @@ class Configuration:
         """
         Look at the current Configurations and determine 1:1 old intf to subintf mapping
         """   
-        retdict = {}
+        retdict = dict()
         for config in self.l3_interfaces:
             retdict[config['if_name']] = config['new_if_name']
         

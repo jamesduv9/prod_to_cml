@@ -31,8 +31,23 @@ def main():
     help="OPTIONAL: Tells the script which file extension your configs will use inside the source_path directory",
     default=".config",
 )
+@click.option(
+    "--create_tf",
+    help="Build tfvars and terraform base deployment file",
+    is_flag=True
+)
+@click.option(
+    "--management_interface",
+    help="Specify which interface to use for management/external connectivity"
+
+)
+@click.option(
+    "--management_subnet",
+    help="Must be a /24, specify the network you want the management network to be enabled on",
+    default="10.0.0.0/24"
+)
 def create_configs(
-    source_path: str, output_path: str, vlan_seed: str, config_file_ext: str
+    source_path: str, output_path: str, vlan_seed: str, config_file_ext: str, create_tf:str, management_interface:str, management_subnet:str
 ) -> None:
     """
     Takes your passed in directory of configurations with various interfaces, maps them all to individual GigabitEthernet1.X subinterfaces. Provides a quick way to deploy these configurations to a CML lab through terraform
@@ -54,9 +69,12 @@ def create_configs(
 
     # load all files with specified extension
     conv.load_configs()
-
+    
     # parse out all l3 interfaces in the config files
     for config in conv.configs:
+        config.get_current_config()
+        config.get_hostname()
+
         config.get_l3_interfaces()
 
     # Finds common subnets and assigns vlanids
@@ -70,8 +88,9 @@ def create_configs(
     # Builds the interface mapping to show old vs new
     conv.save_interface_mapping()
 
-    # Creates main.tf and vars.tfvars.json in the destination path
-    conv.create_tf_files()
+    if create_tf:
+        # Creates main.tf and vars.tfvars.json in the destination path
+        conv.create_tf_files()
 
 
 if __name__ == "__main__":
