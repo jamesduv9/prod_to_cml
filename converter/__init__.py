@@ -177,7 +177,7 @@ class Converter:
             if "encapsulation" in line:
                 new_config.remove(line)
                 continue  # because we removed a line, continue the loop without incrementing the index
-            match = re.search(f"^interface {ALL_INTERFACE_FLAVORS_REGEX}$", line)
+            match = re.search(f"^interface {ALL_INTERFACE_FLAVORS_REGEX}.[1-4096]$", line)
             if match:
                 for interface in config_interfaces:
                     if f"interface {interface['new_if_name']}" == match.group(0):
