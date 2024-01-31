@@ -14,12 +14,12 @@ At a high level the script does the following to address this:
 - Finds common subnets within all configs and assigns them to a unique vlan ID
 - Assigns another unique vlan ID to all other layer 3 interfaces without any peers on their lan segment
 - Converts and replaces all found layer 3 interfaces with GigabitEthernet1.X, where X is the unique vlan ID
-- Creates a vars.tfvars.json and main.tf file that use Cisco DevNet's CML provider to generate a deployable lab 
+- Creates a auto.tfvars.json and main.tf file that use Cisco DevNet's CML provider to generate a deployable lab 
 
 ## Usage
 running ```python prod_to_cml.py``` presents a cli tool using the Click library. the only command currently is ```create_configs```
 ```
-> python3 prod_to_cml.py create_configs --help
+>python .\prod_to_cml.py create_configs --help
 Usage: prod_to_cml.py create_configs [OPTIONS]
 
   Takes your passed in directory of configurations with various interfaces,
@@ -27,19 +27,26 @@ Usage: prod_to_cml.py create_configs [OPTIONS]
   quick way to deploy these configurations to a CML lab through terraform
 
 Options:
-  --source_path TEXT      MANDATORY: path to your configuration directory you
-                          want to convert  [required]
-  --output_path TEXT      MANDATORY: Provide the destination directory for the
-                          configs, interface mapping, and tfvars json file.
-                          Cannot equal source_path  [required]
-  --vlan_seed INTEGER     OPTIONAL: Which vlan to start incrementing at, avoid
-                          setting too high. Must be greater than 1
-  --config_file_ext TEXT  OPTIONAL: Tells the script which file extension your
-                          configs will use inside the source_path directory
-  --help                  Show this message and exit.
+  --source_path TEXT           MANDATORY: path to your configuration directory
+                               you want to convert  [required]
+  --output_path TEXT           MANDATORY: Provide the destination directory
+                               for the configs, interface mapping, and tfvars
+                               json file. Cannot equal source_path  [required]
+  --vlan_seed INTEGER          OPTIONAL: Which vlan to start incrementing at,
+                               avoid setting too high. Must be greater than 1
+                               [default: 2]
+  --config_file_ext TEXT       OPTIONAL: Tells the script which file extension
+                               your configs will use inside the source_path
+                               directory  [default: .config]
+  --create_tf                  Build tfvars and terraform base deployment file
+  --management_interface TEXT  Specify which interface to use for
+                               management/external connectivity
+  --management_subnet TEXT     Must be a /24, specify the network you want the
+                               management network to be enabled on  [default:
+                               10.0.0.0/24]
+  --help                       Show this message and exit.
 ```
 
-By default the optional options ```vlan_seed``` and ```config_file_ext``` are set to 2 and ".config" respectively. 
 
 You can then run the script by passing it a directory of configurations you want to convert, along with an output directory. In this example I also have my configurations stored as .txt files, and I want to start with a vlan seed of 5
 
@@ -53,18 +60,13 @@ And then inspecting the output directory ./example_output
 ```
 > tree example_output/
 example_output/
-├── LAB-hub77.txt                               <------ Converted hub77 config
+├── LAB-hub77.txt                     <---- Converted device configs
 ├── LAB-hub78.txt
 ├── LAB-spoke.txt
 ├── LAB-transport_router.txt
-├── hub77.txt-interface_map.json                <------ hub77 old to new interface mappings
-├── hub78.txt-interface_map.json
-├── main.tf                                     <------ prebuilt teraform hcl file for CML deployment
-├── spoke.txt-interface_map.json
-├── transport_router.txt-interface_map.json
-└── vars.tfvars.json                            <------ Generated tfvars files to make your new configurations plugable into main.tf
-
-0 directories, 10 files
+├── auto.tfvars.json                  <---- Automatically built terraform vars file for your nodes
+├── main.tf                           <---- Terraform file for automated CML deployment
+└── overall_interface_map.json        <---- Shows the interfaces converted to subinterfaces in json
 
 ```
 ## Deployment Using Terraform
@@ -76,7 +78,7 @@ I'll now going to change directories into the output folder, initiate terraform,
 > cd example_output
 > terraform init
     --- output omitted ---
-> terraform apply -var-file vars.tfvars.json
+> terraform apply -var-file auto.tfvars.json
 var.cml_lab_name
   Name of the lab we will create in CML
 
