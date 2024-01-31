@@ -1,0 +1,17 @@
+{
+  "devices": {
+    "hub77": {
+      "TenGigabitEthernet0/0/1": "GigabitEthernet1.2"
+    },
+    "hub78": {
+      "TenGigabitEthernet0/1/3": "GigabitEthernet1.2"
+    },
+    "gibberish-spoke": {
+      "FastEthernet0/16": "GigabitEthernet1.3"
+    },
+    "transport_router": {
+      "GigabitEthernet0/2": "GigabitEthernet1.3",
+      "GigabitEthernet0/14": "GigabitEthernet1.2"
+    }
+  }
+}

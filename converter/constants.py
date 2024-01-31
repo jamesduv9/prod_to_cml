@@ -1,6 +1,6 @@
 #Attempt to match all common interface types, in shorthand or full notation
 ALL_INTERFACE_FLAVORS_REGEX = (
-    r"\b(?:Gi(gabitEthernet)|Eth(ernet)|Vl(an)|Fa(stEthernet)|Se(rial)|Te(nGigabitEthernet)|Twe(GigabitEthernet)|Po(rtChannel))\d+(?:\/\d+)*(?:\/\d+)?\b"
+    r"\b(?:Gi(gabitEthernet)|Eth(ernet)|Vl(an)|Fa(stEthernet)|BDI|Se(rial)|Te(nGigabitEthernet)|Twe(GigabitEthernet)|Po(rt-channel))\d+(?:\.\d+)*(?:\/\d+)*(?:\/\d+)?\b"
 )
 
 #Appended to start of config to add our admin:admin
@@ -19,11 +19,15 @@ action 1.0 cli command "enable"
 action 1.1 cli command "configure terminal"
 action 1.2 cli command "interface gigabitethernet1"
 action 1.3 cli command "no shut"
+action 1.4 cli command "aaa new-model"
+action 1.5 cli command "aaa authentication login default local"
+action 1.6 cli command "aaa authentication enable default none"
+action 1.7 cli command "username admin privilege 15 secret admin"
 action 1.4 cli command "exit"
 """
 
 #Any line found with these values will be automatically removed from the config
-BAD_WORDS = ["aaa", "username"]
+BAD_WORDS = ["aaa", "username", "enable secret"]
 
 #Skeleteon that we will use to create our .tfvars.json data
 TFVARS_SKELETON = {

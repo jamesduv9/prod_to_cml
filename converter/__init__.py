@@ -69,7 +69,7 @@ class Converter:
 
             tf_var_template['nodes'].append(working_dict)
         
-        self.save_output(file_=f"vars.tfvars.json", save_me=tf_var_template, type_="json")
+        self.save_output(file_=f"auto.tfvars.json", save_me=tf_var_template, type_="json")
         self.save_output(file_="main.tf", save_me=TF_FILE, type_="hcl")
 
     @staticmethod
@@ -160,11 +160,14 @@ class Converter:
         """
         compares each config line with the list of bad_words. Removes them
         """
+        fixed_new_config = []
         for line in new_config:
             if any(bad_word in line for bad_word in BAD_WORDS):
                 new_config.remove(line)
+            else:
+                fixed_new_config.append(line)
         
-        return new_config
+        return fixed_new_config
 
 
     def _add_encap(self, new_config: List, config_interfaces: List[Dict]) -> List:
@@ -177,7 +180,7 @@ class Converter:
             if "encapsulation" in line:
                 new_config.remove(line)
                 continue  # because we removed a line, continue the loop without incrementing the index
-            match = re.search(f"^interface {ALL_INTERFACE_FLAVORS_REGEX}$", line)
+            match = re.search(f"^interface {ALL_INTERFACE_FLAVORS_REGEX}.[1-9].*$", line)
             if match:
                 for interface in config_interfaces:
                     if f"interface {interface['new_if_name']}" == match.group(0):
